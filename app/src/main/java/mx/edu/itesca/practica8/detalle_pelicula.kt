@@ -1,6 +1,8 @@
 package mx.edu.itesca.practica8
 
+import android.content.Intent
 import android.os.Bundle
+import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.activity.enableEdgeToEdge
@@ -17,19 +19,31 @@ class detalle_pelicula : AppCompatActivity() {
         val iv_pelicula_image: ImageView = findViewById(R.id.iv_pelicula_imagen)
         val tv_nombre_pelicula: TextView = findViewById(R.id.tv_nombre_pelicula)
         val tv_pelicula_desc: TextView = findViewById(R.id.tv_pelicula_desc)
+        val tv_asientos_disponibles: TextView = findViewById(R.id.seatLeft)
+
+
 
         val bundle = intent.extras
-        if (bundle!=null){
+        if (bundle != null) {
             iv_pelicula_image.setImageResource(bundle.getInt("header"))
             tv_nombre_pelicula.setText(bundle.getString("titulo"))
             tv_pelicula_desc.setText(bundle.getString("sinopsis"))
+            tv_asientos_disponibles.text = (bundle.getInt("numberSeats").toString() + " Asientos disponibles")
         }
+        val button: Button = findViewById(R.id.buyTickets)
+        button.setOnClickListener {
+            val intent = Intent(this, seatSelection::class.java)
+            intent.putExtra("titulo", tv_nombre_pelicula.text.toString())
+            intent.putExtra("header", bundle?.getInt("header") ?: 0)
+            intent.putExtra("sinopsis", tv_pelicula_desc.text.toString())
+            intent.putExtra("numberSeats", bundle?.getInt("numberSeats") ?: 0)
+            startActivity(intent)
 
-
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
-            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
-            insets
+            ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
+                val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+                v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
+                insets
+            }
         }
     }
 }
